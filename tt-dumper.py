@@ -151,14 +151,14 @@ if FIRST_RESPONSE.status_code == 200:
     else:
         print("  [!] 'duration' Not Found")
         exit()
-
-    # 
-    
+     
     print('________________________________________________________________________\n')
     print(f"  :: URL : {URL}\n  :: Total Like : {METADATA["metadata"]["totalLike"]}\n  :: Total Comments : {METADATA["metadata"]["totalComment"]}\n  :: Total Share : {METADATA["metadata"]["totalShare"]}\n  :: Duration : {METADATA["metadata"]["duration"]}\n  :: Posted at : {METADATA["metadata"]["createTime"]}")
     print('________________________________________________________________________\n')
 
+
     try:
+        cwd = os.getcwd()  
         for CURSOR in range(0, int(METADATA["metadata"]["totalComment"]), 50):
             API_URL = f'https://www.tiktok.com/api/comment/list/?aid=1988&app_language=en&app_name=tiktok_web&aweme_id={METADATA["metadata"]["idVideo"]}&count=50&cursor={CURSOR}&os=windows&region=ID&screen_height=768&screen_width=1366&user_is_login=false'
             
@@ -180,9 +180,7 @@ if FIRST_RESPONSE.status_code == 200:
                         break
                 except IndexError:
                     pass
-    finally:
-        cwd = os.getcwd()
-
+      
         if FILE_TYPE == 'json':
             with open(OUTPUT, 'w', encoding="utf-8") as file:
                 JSON.dump({"metadata": METADATA['metadata'],"comments": METADATA['comments']}, file, ensure_ascii=False, indent=4)
@@ -202,5 +200,10 @@ if FIRST_RESPONSE.status_code == 200:
         print(fr"  [+] Result | Saved in {cwd}\{OUTPUT}                                      ", end="\r")
         print(f'\n\n     | Total Comments : {METADATA["metadata"]["totalComment"]}\n',
         f'    | Received Comments : {len(METADATA["comments"])}\n')
+    except KeyboardInterrupt:
+        print(fr"  [+] Result | Saved in {cwd}\{OUTPUT}                                      ", end="\r")
+        print(f'\n\n     | Total Comments : {METADATA["metadata"]["totalComment"]}\n',
+        f'    | Received Comments : {len(METADATA["comments"])}\n')
+        print('  [!] Keyboard Interrupt by User/ Bye')
 else:
     print(f"Gagal mengambil halaman, Status Code: {FIRST_RESPONSE.status_code}")
